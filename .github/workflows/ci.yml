@@ -69,6 +69,12 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Install dependencies
         run: yarn --immutable
+      - name: Cache Playwright binary
+        uses: actions/cache@v4
+        with:
+          key: playwright-bin
+          path: $HOME/.cache/playwright-bin
+          restore-keys: playwright-bin
       - name: Install Playwright browser
         run: npx playwright@latest install --with-deps
       - name: Generate tsconfig.json base

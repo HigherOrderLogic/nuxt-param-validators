@@ -8,6 +8,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -17,6 +19,6 @@ jobs:
         with:
           node-version: 18.x
 
-      - run: npx changelogithub
+      - run: npx changelogithub@latest
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

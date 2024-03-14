@@ -7,6 +7,14 @@ on:
     paths-ignore:
       - "*.md"
   pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - "*.md"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name != 'push' }}
 
 jobs:
   Linting:

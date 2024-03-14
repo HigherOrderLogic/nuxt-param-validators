@@ -77,7 +77,7 @@ jobs:
           key: playwright-bin
           path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
           restore-keys: playwright-bin
-      - name: Install Playwright browser
+      - name: Install Playwright browsers
         run: npx playwright@latest install --with-deps
       - name: Generate tsconfig.json base
         run: yarn dev:prepare

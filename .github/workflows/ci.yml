@@ -5,12 +5,12 @@ on:
     branches:
       - master
     paths-ignore:
-      - "*.md"
+      - '*.md'
   pull_request:
     branches:
       - master
     paths-ignore:
-      - "*.md"
+      - '*.md'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
@@ -71,5 +71,7 @@ jobs:
         run: yarn --immutable
       - name: Install Playwright browser
         run: npx playwright@latest install --with-deps
+      - name: Generate tsconfig.json base
+        run: yarn dev:prepare
       - name: Run test
         run: yarn run test

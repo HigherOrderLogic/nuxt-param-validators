@@ -69,11 +69,13 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Install dependencies
         run: yarn --immutable
-      - name: Cache Playwright binary
+      - name: Get Playwright browsers path
+        run: echo "PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/playwright-bin" >> $GITHUB_ENV
+      - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
           key: playwright-bin
-          path: $HOME/.cache/playwright-bin
+          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
           restore-keys: playwright-bin
       - name: Install Playwright browser
         run: npx playwright@latest install --with-deps

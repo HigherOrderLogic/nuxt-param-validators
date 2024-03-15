@@ -1,5 +1,5 @@
 import { readdir } from 'node:fs/promises'
-import { addImportsDir, addPluginTemplate, createResolver, defineNuxtModule, updateTemplates, useLogger } from '@nuxt/kit'
+import { addImportsDir, addPluginTemplate, createResolver, defineNuxtModule, updateTemplates } from '@nuxt/kit'
 import { genImport } from 'knitwork'
 import { camelCase, kebabCase, pascalCase, snakeCase } from 'scule'
 
@@ -21,7 +21,6 @@ export default defineNuxtModule<ModuleOptions>({
     validatorsDir: 'validators',
   },
   async setup(options, nuxt) {
-    const logger = useLogger(MODULE_NAME)
     const rootDirResolver = createResolver(nuxt.options.rootDir)
 
     addImportsDir(createResolver(import.meta.url).resolve('./runtime/composables'))
@@ -60,11 +59,8 @@ export default defineNuxtModule<ModuleOptions>({
                 || validator === camelCase(val)
                 || validator === kebabCase(val)
                 || validator === pascalCase(val)
-                || validator === snakeCase(val))) {
-                logger.error(`Validator '${validator}' not found for page ${page.path}`)
-                // eslint-disable-next-line node/prefer-global/process
-                process.exit(1) // straight exit because at this point, we wont be able to generate virtual file
-              }
+                || validator === snakeCase(val)))
+                throw new Error(`Validator '${validator}' not found for page ${page.path}`)
 
               const resultVarName = `_${camelCase(validator)}${param}result`.replaceAll('.', '')
 

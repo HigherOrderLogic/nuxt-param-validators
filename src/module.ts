@@ -36,7 +36,7 @@ export default defineNuxtModule<ModuleOptions>({
       getContents: ({ app: nuxtApp }) => {
         const getValidatorName = (v: string) => `_${camelCase(v)}Validator`
 
-        let functionBody = ''
+        const functionBody: string[] = []
 
         for (const page of nuxtApp.pages || []) {
           if (!page.file)
@@ -53,38 +53,37 @@ export default defineNuxtModule<ModuleOptions>({
               return { param, validator }
             })
 
-            functionBody += [
-              `  if(to.name === \`${page.name}\`) {`,
-              paramsAndValidators.map((pv) => {
-                if (!validators.some(val => pv.validator === val
-                  || pv.validator === camelCase(val)
-                  || pv.validator === kebabCase(val)
-                  || pv.validator === pascalCase(val)
-                  || pv.validator === snakeCase(val))) {
-                  logger.error(`Validator '${pv.validator}' not found for page ${page.path}`)
-                  // eslint-disable-next-line node/prefer-global/process
-                  process.exit(1) // straight exit because at this point, we wont be able to generate virtual file
-                }
+            functionBody.push(`  if(to.name === \`${page.name}\`) {`)
 
-                const resultVarName = `_${camelCase(pv.validator)}${pv.param}result`.replaceAll('.', '')
+            for (const { param, validator } of paramsAndValidators) {
+              if (!validators.some(val => validator === val
+                || validator === camelCase(val)
+                || validator === kebabCase(val)
+                || validator === pascalCase(val)
+                || validator === snakeCase(val))) {
+                logger.error(`Validator '${validator}' not found for page ${page.path}`)
+                // eslint-disable-next-line node/prefer-global/process
+                process.exit(1) // straight exit because at this point, we wont be able to generate virtual file
+              }
 
-                return [
-                `   const ${resultVarName} = await ${getValidatorName(pv.validator)}(to.params.${pv.param.replaceAll('.', '')}, to, from)`,
-                `   if (typeof ${resultVarName} !== 'undefined' && ${resultVarName} !== true) return ${resultVarName}`,
-                ].join('\n')
-              }).join('\n'),
-              '   return',
-              '}',
-            ].join('\n')
+              const resultVarName = `_${camelCase(validator)}${param}result`.replaceAll('.', '')
+
+              functionBody.push(...[
+              `   const ${resultVarName} = await ${getValidatorName(validator)}(to.params.${param.replaceAll('.', '')}, to, from)`,
+              `   if (typeof ${resultVarName} !== 'undefined' && ${resultVarName} !== true) return ${resultVarName}`,
+              ])
+            }
+
+            functionBody.push(...['   return', '}'])
           }
         }
 
         return [
           genImport('nuxt/app', ['defineNuxtPlugin', 'addRouteMiddleware']),
-          validators.map(v => genImport(rootDirResolver.resolve(options.validatorsDir!, v), getValidatorName(v))).join('\n'),
+          ...validators.map(v => genImport(rootDirResolver.resolve(options.validatorsDir!, v), getValidatorName(v))),
           'export default defineNuxtPlugin(() => {',
           ' addRouteMiddleware(async (to, from) => {',
-          functionBody,
+          ...functionBody,
           ' })',
           '})',
         ].join('\n')

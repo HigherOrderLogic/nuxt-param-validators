@@ -27,8 +27,9 @@ export default defineNuxtModule<ModuleOptions>({
 
     const validators: string[] = []
 
-    for (const file of await readdir(rootDirResolver.resolve(options.validatorsDir!)))
+    for (const file of await readdir(rootDirResolver.resolve(options.validatorsDir!))) {
       validators.push(file.replace(/.ts$/, ''))
+    }
 
     addPluginTemplate({
       filename: 'param-validator-plugin.ts',
@@ -38,8 +39,9 @@ export default defineNuxtModule<ModuleOptions>({
         const functionBody: string[] = []
 
         for (const page of nuxtApp.pages || []) {
-          if (!page.file)
+          if (!page.file) {
             continue
+          }
 
           const paramsWithValidator = page.file.split(/[\[\]]/).filter(s => /\S+=\S+/.test(s))
 
@@ -59,8 +61,9 @@ export default defineNuxtModule<ModuleOptions>({
                 || validator === camelCase(val)
                 || validator === kebabCase(val)
                 || validator === pascalCase(val)
-                || validator === snakeCase(val)))
+                || validator === snakeCase(val))) {
                 throw new Error(`Validator '${validator}' not found for page ${page.path}`)
+              }
 
               const resultVarName = `_${camelCase(validator)}${param}result`.replaceAll('.', '')
 

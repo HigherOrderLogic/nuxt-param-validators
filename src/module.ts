@@ -1,7 +1,7 @@
-import { readdir } from 'node:fs/promises'
 import { addImportsDir, addPluginTemplate, createResolver, defineNuxtModule, updateTemplates } from '@nuxt/kit'
 import { genImport } from 'knitwork'
 import { camelCase, kebabCase, pascalCase, snakeCase } from 'scule'
+import { globby } from 'globby'
 
 export interface ModuleOptions {
   validatorsDir?: string
@@ -25,10 +25,10 @@ export default defineNuxtModule<ModuleOptions>({
 
     addImportsDir(createResolver(import.meta.url).resolve('./runtime/composables'))
 
-    const validators: string[] = []
+    const validators = (await globby(`${options.validatorsDir!}/*.{ts,js,cjs,mjs}`, { cwd: nuxt.options.rootDir })).map(v => v.split('/').at(-1)!.replace(/\.(ts|js|cjs|mjs)$/, ''))
 
-    for (const file of await readdir(rootDirResolver.resolve(options.validatorsDir!))) {
-      validators.push(file.replace(/.ts$/, ''))
+    if (!validators.length) {
+      return
     }
 
     addPluginTemplate({

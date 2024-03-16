@@ -43,38 +43,30 @@ export default defineNuxtModule<ModuleOptions>({
             continue
           }
 
-          const paramsWithValidator = page.file.split(/[\[\]]/).filter(s => /\S+=\S+/.test(s))
+          functionBody.push(`  if(to.name === \`${page.name}\`) {`)
 
-          if (paramsWithValidator.length > 0) {
-            const paramsAndValidators = paramsWithValidator.map((p) => {
-              const [param, validator] = p.split('=')
+          for (const [_, pv] of page.file.matchAll(/\[(\S+?=\S+?)\]/g)) {
+            const [param, validator] = pv.split('=')
 
-              page.path = page.path.replace(`:${param}${validator}`, `:${param}`)
+            page.path = page.path.replace(`:${param}${validator}`, `:${param}`)
 
-              return { param, validator }
-            })
-
-            functionBody.push(`  if(to.name === \`${page.name}\`) {`)
-
-            for (const { param, validator } of paramsAndValidators) {
-              if (!validators.some(val => validator === val
-                || validator === camelCase(val)
-                || validator === kebabCase(val)
-                || validator === pascalCase(val)
-                || validator === snakeCase(val))) {
-                throw new Error(`Validator '${validator}' not found for page ${page.path}`)
-              }
-
-              const resultVarName = `_${camelCase(validator)}${param}result`.replaceAll('.', '')
-
-              functionBody.push(...[
-              `   const ${resultVarName} = await ${getValidatorName(validator)}(to.params.${param.replaceAll('.', '')}, to, from)`,
-              `   if (typeof ${resultVarName} !== 'undefined' && ${resultVarName} !== true) return ${resultVarName}`,
-              ])
+            if (!validators.some(val => validator === val
+              || validator === camelCase(val)
+              || validator === kebabCase(val)
+              || validator === pascalCase(val)
+              || validator === snakeCase(val))) {
+              throw new Error(`Validator '${validator}' not found for page ${page.path}`)
             }
 
-            functionBody.push(...['   return', '}'])
+            const resultVarName = `_${camelCase(validator)}${param}result`.replaceAll('.', '')
+
+            functionBody.push(...[
+              `   const ${resultVarName} = await ${getValidatorName(validator)}(to.params.${param.replaceAll('.', '')}, to, from)`,
+              `   if (typeof ${resultVarName} !== 'undefined' && ${resultVarName} !== true) return ${resultVarName}`,
+            ])
           }
+
+          functionBody.push(...['   return', '}'])
         }
 
         return [

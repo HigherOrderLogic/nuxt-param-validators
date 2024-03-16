@@ -1,6 +1,6 @@
 import { addImportsDir, addPluginTemplate, createResolver, defineNuxtModule, updateTemplates } from '@nuxt/kit'
 import { genImport } from 'knitwork'
-import { camelCase, kebabCase, pascalCase, snakeCase } from 'scule'
+import { camelCase } from 'scule'
 import { globby } from 'globby'
 
 export interface ModuleOptions {
@@ -54,11 +54,7 @@ export default defineNuxtModule<ModuleOptions>({
 
             page.path = page.path.replace(`:${param}${validator}`, `:${param}`)
 
-            if (!validators.some(val => validator === val
-              || validator === camelCase(val)
-              || validator === kebabCase(val)
-              || validator === pascalCase(val)
-              || validator === snakeCase(val))) {
+            if (!validators.some(val => camelCase(validator) === camelCase(val))) {
               throw new Error(`Validator '${validator}' not found for page ${page.path}`)
             }
 

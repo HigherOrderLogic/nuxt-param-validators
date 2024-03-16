@@ -58,10 +58,10 @@ export default defineNuxtModule<ModuleOptions>({
               throw new Error(`Validator '${validator}' not found for page ${page.path}`)
             }
 
-            const resultVarName = `_${camelCase(validator)}${param}result`.replaceAll('.', '')
+            const resultVarName = `_${camelCase(validator)}${param}result`.replace(/\W/g, '')
 
             functionBody.push(...[
-              `   const ${resultVarName} = await ${getValidatorName(validator)}(to.params.${param.replaceAll('.', '')}, to, from)`,
+              `   const ${resultVarName} = await ${getValidatorName(validator)}(to.params.${param.replace(/\W/g, '')}, to, from)`,
               `   if (typeof ${resultVarName} !== 'undefined' && ${resultVarName} !== true) return ${resultVarName}`,
             ])
           }

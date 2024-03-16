@@ -45,8 +45,12 @@ export default defineNuxtModule<ModuleOptions>({
 
           functionBody.push(`  if(to.name === \`${page.name}\`) {`)
 
-          for (const [_, pv] of page.file.matchAll(/\[(\S+?=\S+?)\]/g)) {
-            const [param, validator] = pv.split('=')
+          for (const match of page.file.matchAll(/\[(?<pv>\S+?=\S+?)\]/g)) {
+            if (!match.groups) {
+              continue
+            }
+
+            const [param, validator] = match.groups.pv.split('=')
 
             page.path = page.path.replace(`:${param}${validator}`, `:${param}`)
 

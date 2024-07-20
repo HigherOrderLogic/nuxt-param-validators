@@ -43,7 +43,7 @@ export default defineNuxtModule<ModuleOptions>({
             continue
           }
 
-          functionBody.push(`  if(to.name === \`${page.name}\`) {`)
+          functionBody.push(`  if(to.name === ${JSON.stringify(page.name)}) {`)
 
           // open to suggestion to fix this one
           // eslint-disable-next-line regexp/no-super-linear-backtracking

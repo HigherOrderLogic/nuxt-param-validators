@@ -45,6 +45,8 @@ export default defineNuxtModule<ModuleOptions>({
 
           functionBody.push(`  if(to.name === \`${page.name}\`) {`)
 
+          // open to suggestion to fix this one
+          // eslint-disable-next-line regexp/no-super-linear-backtracking
           for (const match of page.file.matchAll(/\[(?<pv>\S+?=\S+?)\]/g)) {
             if (!match.groups) {
               continue

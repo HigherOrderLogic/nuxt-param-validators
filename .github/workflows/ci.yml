@@ -80,6 +80,6 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright@latest install --with-deps
       - name: Generate tsconfig.json base
-        run: yarn dev:prepare
+        run: yarn run dev:prepare
       - name: Run test
         run: yarn run test

@@ -1,7 +1,7 @@
 import { addImportsDir, addPluginTemplate, createResolver, defineNuxtModule, updateTemplates } from '@nuxt/kit'
+import { globby } from 'globby'
 import { genImport } from 'knitwork'
 import { camelCase } from 'scule'
-import { globby } from 'globby'
 
 export interface ModuleOptions {
   validatorsDir?: string

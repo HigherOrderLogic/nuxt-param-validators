@@ -29,4 +29,5 @@ jobs:
           yarn config set npmAlwaysAuth true
           yarn config set npmAuthToken $NPM_TOKEN
           yarn --immutable
+          yarn run dev:prepare
           yarn npm publish

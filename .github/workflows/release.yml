@@ -21,4 +21,11 @@ jobs:
 
       - run: npx changelogithub@latest
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          yarn config set npmAlwaysAuth true
+          yarn config set npmAuthToken $NPM_TOKEN
+          yarn npm publish

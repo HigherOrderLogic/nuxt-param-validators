@@ -20,10 +20,10 @@
   ],
   "scripts": {
     "prepack": "yarn run build",
-    "build": "nuxt-module-build",
+    "build": "nuxt-module-build build",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
-    "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
+    "dev:prepare": "nuxt-module-build prepare --stub && nuxi prepare playground",
     "lint": "eslint .",
     "test": "vitest run"
   },

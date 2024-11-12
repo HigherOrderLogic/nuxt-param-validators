@@ -25,7 +25,8 @@ export default defineNuxtModule<ModuleOptions>({
 
     addImportsDir(createResolver(import.meta.url).resolve('./runtime/composables'))
 
-    const validators = (await globby(`${options.validatorsDir!}/*.{ts,js,cjs,mjs}`, { cwd: nuxt.options.rootDir })).map(v => v.split('/').at(-1)!.replace(/\.(ts|js|cjs|mjs)$/, ''))
+    const validators = (await globby(`${options.validatorsDir!}/*.{ts,js,cjs,mjs}`, { cwd: nuxt.options.rootDir }))
+      .map(v => v.split('/').at(-1)!.replace(/\.(ts|js|cjs|mjs)$/, ''))
 
     if (!validators.length) {
       return
@@ -62,7 +63,11 @@ export default defineNuxtModule<ModuleOptions>({
 
             const resultVarName = `_${camelCase(validator)}${param}result`.replace(/\W/g, '')
 
-            functionBody.push(...`   const ${resultVarName} = await ${getValidatorName(validator)}(to.params.${param.replace(/\W/g, '')}, to, from)`, `   if (typeof ${resultVarName} !== 'undefined' && ${resultVarName} !== true) return ${resultVarName}`)
+            functionBody.push(
+              // eslint-disable-next-line style/max-len
+              `   const ${resultVarName} = await ${getValidatorName(validator)}(to.params.${param.replace(/\W/g, '')}, to, from)`,
+              `   if (typeof ${resultVarName} !== 'undefined' && ${resultVarName} !== true) return ${resultVarName}`,
+            )
           }
 
           functionBody.push(...['   return', '}'])

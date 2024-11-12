@@ -46,14 +46,12 @@ export default defineNuxtModule<ModuleOptions>({
 
           functionBody.push(`  if(to.name === ${JSON.stringify(page.name)}) {`)
 
-          // open to suggestion to fix this one
-          // eslint-disable-next-line regexp/no-super-linear-backtracking
-          for (const match of page.file.matchAll(/\[(?<pv>\S+?=\S+?)\]/g)) {
+          for (const match of page.file.matchAll(/\[(?<param>[^\s=]+)=(?<validator>\S+?)\]/g)) {
             if (!match.groups) {
               continue
             }
 
-            const [param, validator] = match.groups.pv.split('=')
+            const { param, validator } = match.groups
 
             page.path = page.path.replace(`:${param}${validator}`, `:${param}`)
 

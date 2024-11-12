@@ -62,10 +62,7 @@ export default defineNuxtModule<ModuleOptions>({
 
             const resultVarName = `_${camelCase(validator)}${param}result`.replace(/\W/g, '')
 
-            functionBody.push(...[
-              `   const ${resultVarName} = await ${getValidatorName(validator)}(to.params.${param.replace(/\W/g, '')}, to, from)`,
-              `   if (typeof ${resultVarName} !== 'undefined' && ${resultVarName} !== true) return ${resultVarName}`,
-            ])
+            functionBody.push(...`   const ${resultVarName} = await ${getValidatorName(validator)}(to.params.${param.replace(/\W/g, '')}, to, from)`, `   if (typeof ${resultVarName} !== 'undefined' && ${resultVarName} !== true) return ${resultVarName}`)
           }
 
           functionBody.push(...['   return', '}'])

@@ -19,6 +19,7 @@ describe('basic fixtures', async () => {
     ['/is-number/1', 200],
     ['/is-number/007', 200],
     ['/is-number/a', 404],
+    ['/error/123', 500],
   ])('path %s should be %s', async (path, statusCode) => {
     const { status } = await fetch(path)
     expect(status).toEqual(statusCode)

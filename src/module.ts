@@ -62,9 +62,13 @@ export default defineNuxtModule<ModuleOptions>({
             const resultVarName = `_${camelCase(validator)}${param}result`.replace(/\W/g, '')
 
             functionBody.push(
+              `    try {`,
               // eslint-disable-next-line style/max-len
-              `   const ${resultVarName} = await ${getValidatorName(validator)}(to.params.${param.replace(/\W/g, '')}, to, from)`,
-              `   if (typeof ${resultVarName} !== 'undefined' && ${resultVarName} !== true) return ${resultVarName}`,
+              `      const ${resultVarName} = await ${getValidatorName(validator)}(to.params.${param.replace(/\W/g, '')}, to, from)`,
+              `      if (typeof ${resultVarName} !== 'undefined' && ${resultVarName} !== true) return ${resultVarName}`,
+              `    } catch (e) {`,
+              `      return createH3Error(e)`,
+              `    }`,
             )
           }
 
@@ -72,7 +76,6 @@ export default defineNuxtModule<ModuleOptions>({
         }
 
         return [
-          genImport('nuxt/app', ['defineNuxtPlugin', 'addRouteMiddleware']),
           ...validators.map(v => genImport(rootDirResolver.resolve(options.validatorsDir!, v), getValidatorName(v))),
           'export default defineNuxtPlugin(() => {',
           ' addRouteMiddleware(async (to, from) => {',

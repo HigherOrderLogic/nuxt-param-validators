@@ -2,19 +2,16 @@
   "name": "nuxt-param-validators",
   "type": "module",
   "version": "0.2.4",
-  "packageManager": "yarn@4.5.1",
+  "packageManager": "yarn@4.8.1",
   "description": "Provide param validators for you Nuxt project",
   "license": "MIT",
   "repository": "HigherOrderLogic/nuxt-param-validators",
   "exports": {
     ".": {
-      "types": "./dist/types.d.ts",
-      "import": "./dist/module.mjs",
-      "require": "./dist/module.cjs"
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
     }
   },
-  "main": "./dist/module.cjs",
-  "types": "./dist/types.d.ts",
   "files": [
     "dist"
   ],
@@ -35,7 +32,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.11.0",
-    "@nuxt/module-builder": "^1.0.0-alpha.1",
+    "@nuxt/module-builder": "^1.0.0",
     "@nuxt/test-utils": "^3.17.2",
     "@types/node": "^22.13.12",
     "eslint": "^9.23.0",

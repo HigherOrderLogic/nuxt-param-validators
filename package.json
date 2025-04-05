@@ -1,7 +1,7 @@
 {
   "name": "nuxt-param-validators",
   "type": "module",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "packageManager": "yarn@4.8.1",
   "description": "Provide param validators for you Nuxt project",
   "license": "MIT",
